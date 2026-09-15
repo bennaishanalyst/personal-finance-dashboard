@@ -59,5 +59,8 @@ for t in txns:
         label_visibility="collapsed",
     )
     if new_cat != t["category"]:
-        db.update_transaction_category(t["id"], new_cat)
+        updated = db.recategorize_transaction(t["id"], t["description"], new_cat)
+        if updated > 1:
+            st.toast(f"Applied '{new_cat}' to {updated} transactions matching \"{t['description']}\", "
+                      "and remembered it for future imports.")
         st.rerun()

@@ -38,6 +38,15 @@ CREATE TABLE IF NOT EXISTS balances (
     UNIQUE(account_id, date)
 );
 
+-- Remembers manual category corrections by exact description, so the next
+-- import of the same merchant (and every past transaction with that same
+-- description) gets categorized correctly without re-editing categories.yaml.
+CREATE TABLE IF NOT EXISTS category_overrides (
+    description TEXT PRIMARY KEY COLLATE NOCASE,
+    category TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now'))
+);
+
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
 CREATE INDEX IF NOT EXISTS idx_transactions_account ON transactions(account_id);
 CREATE INDEX IF NOT EXISTS idx_balances_account_date ON balances(account_id, date);
@@ -169,11 +178,34 @@ def get_transactions(account_id: int | None = None, start: str | None = None,
         conn.close()
 
 
-def update_transaction_category(transaction_id: int, category: str) -> None:
+def get_category_overrides() -> dict[str, str]:
+    """description (lowercased) -> category, for every manual correction made so far."""
     conn = get_connection()
     try:
-        conn.execute("UPDATE transactions SET category = ? WHERE id = ?", (category, transaction_id))
+        rows = conn.execute("SELECT description, category FROM category_overrides").fetchall()
+        return {r["description"].lower(): r["category"] for r in rows}
+    finally:
+        conn.close()
+
+
+def recategorize_transaction(transaction_id: int, description: str, category: str) -> int:
+    """Correct one transaction's category, remember the correction for future
+    imports, and retroactively apply it to every other transaction that has
+    the exact same description. Returns how many rows were updated."""
+    conn = get_connection()
+    try:
+        cur = conn.execute(
+            "UPDATE transactions SET category = ? WHERE description = ? COLLATE NOCASE",
+            (category, description),
+        )
+        updated = cur.rowcount
+        conn.execute(
+            """INSERT INTO category_overrides (description, category) VALUES (?, ?)
+               ON CONFLICT(description) DO UPDATE SET category = excluded.category, updated_at = datetime('now')""",
+            (description.strip(), category),
+        )
         conn.commit()
+        return updated
     finally:
         conn.close()
 

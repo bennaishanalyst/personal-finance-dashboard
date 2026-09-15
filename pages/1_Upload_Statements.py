@@ -42,6 +42,13 @@ if not files:
     st.stop()
 
 rules = categorize.load_rules()
+overrides = db.get_category_overrides()
+
+
+def _categorize(description: str) -> str:
+    override = overrides.get(description.strip().lower())
+    return override if override else categorize.categorize(description, rules)
+
 
 for file in files:
     st.markdown(f"---\n### {file.name}")
@@ -104,7 +111,7 @@ for file in files:
         continue
 
     for r in rows:
-        r["category"] = categorize.categorize(r["description"], rules)
+        r["category"] = _categorize(r["description"])
 
     preview = pd.DataFrame(rows)
     st.write(f"**{len(preview)} transactions found:**")

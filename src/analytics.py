@@ -6,6 +6,20 @@ from . import db
 
 LIABILITY_TYPES = {"credit_card", "loan"}
 
+# Categories that represent moving money around rather than actually
+# spending it (e.g. paying off a credit card bill from a checking account
+# shows up as an expense on one account and income on the other) -- these
+# would double-count and inflate both sides of cash flow, so they're
+# excluded from spending/income analytics. They still show up in the
+# Transactions page for the full record.
+NON_SPENDING_CATEGORIES = {"Credit Card Payment"}
+
+
+def _exclude_non_spending(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return df
+    return df[~df["category"].isin(NON_SPENDING_CATEGORIES)]
+
 
 def _rows_to_df(rows) -> pd.DataFrame:
     return pd.DataFrame([dict(r) for r in rows])
@@ -56,7 +70,7 @@ def transactions_df(**filters) -> pd.DataFrame:
 
 
 def monthly_cashflow(months: int = 12) -> pd.DataFrame:
-    df = transactions_df()
+    df = _exclude_non_spending(transactions_df())
     if df.empty:
         return pd.DataFrame(columns=["month", "income", "expenses", "net"])
     df["month"] = df["date"].dt.to_period("M").astype(str)
@@ -69,7 +83,7 @@ def monthly_cashflow(months: int = 12) -> pd.DataFrame:
 
 
 def category_breakdown(start=None, end=None) -> pd.DataFrame:
-    df = transactions_df(start=start, end=end)
+    df = _exclude_non_spending(transactions_df(start=start, end=end))
     if df.empty:
         return pd.DataFrame(columns=["category", "total"])
     spending = df[df["amount"] < 0].copy()
@@ -79,7 +93,7 @@ def category_breakdown(start=None, end=None) -> pd.DataFrame:
 
 
 def top_merchants(start=None, end=None, n: int = 10) -> pd.DataFrame:
-    df = transactions_df(start=start, end=end)
+    df = _exclude_non_spending(transactions_df(start=start, end=end))
     if df.empty:
         return pd.DataFrame(columns=["description", "total", "count"])
     spending = df[df["amount"] < 0].copy()
