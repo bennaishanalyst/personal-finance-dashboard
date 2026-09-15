@@ -154,7 +154,9 @@ def extract_lines(file) -> list[dict]:
                     continue
                 date_raw, description, amount_raw = match.groups()
                 try:
-                    date_iso = pd.to_datetime(date_raw).date().isoformat()
+                    # dayfirst=True: ambiguous numeric dates (e.g. 07/05) are
+                    # otherwise silently misread as month-first (US) by pandas.
+                    date_iso = pd.to_datetime(date_raw, dayfirst=True).date().isoformat()
                 except Exception:
                     continue
                 rows.append({

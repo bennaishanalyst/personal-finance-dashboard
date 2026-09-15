@@ -45,11 +45,18 @@ with tab2:
     if not accounts:
         st.write("No accounts yet.")
     for a in accounts:
-        c1, c2, c3, c4 = st.columns([2, 1.5, 2, 1])
+        c1, c2, c3, c4, c5 = st.columns([2, 1.5, 2, 1.3, 1])
         c1.write(a["name"])
         c2.write(a["type"])
         c3.write(a["institution"] or "")
-        if c4.button("Delete", key=f"delacc_{a['id']}"):
+        if c4.button("Clear transactions", key=f"clear_{a['id']}",
+                     help="Deletes all transactions and balances for this account, keeps the "
+                          "account itself. Use this to wipe out a bad import (e.g. wrong sign "
+                          "convention) before re-uploading."):
+            t_count, b_count = db.clear_account_transactions(a["id"])
+            st.success(f"Cleared {t_count} transactions and {b_count} balances from '{a['name']}'.")
+            st.rerun()
+        if c5.button("Delete", key=f"delacc_{a['id']}"):
             db.delete_account(a["id"])
             st.rerun()
     st.caption("Deleting an account also deletes its transactions and balance history.")

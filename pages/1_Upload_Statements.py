@@ -93,9 +93,33 @@ for file in files:
             }
             st.dataframe(table_df.head(5), use_container_width=True)
 
+        default_dayfirst = csv_parser.detect_dayfirst(table_df, mapping["date"])
+        dayfirst = st.checkbox(
+            "Dates are DD/MM/YYYY (day first)",
+            value=default_dayfirst,
+            key=f"{file.name}_dayfirst",
+            help="Uncheck if this file uses MM/DD/YYYY (US-style) dates instead. Ambiguous "
+                 "dates like 07/05 are silently misread as the wrong month if this is wrong, "
+                 "so check the preview below carefully.",
+        )
+
+        invert_amount = False
+        if mapping["amount"]:
+            default_invert = account["type"] == "credit_card"
+            invert_amount = st.checkbox(
+                "This is a credit card-style amount column: purchases shown as positive, "
+                "payments/refunds shown as negative — flip signs on import",
+                value=default_invert,
+                key=f"{file.name}_invert",
+                help="Credit card statements typically work opposite to a checking account: a "
+                     "purchase increases what you owe (positive) and a payment decreases it "
+                     "(negative). Check this so purchases count as real spending instead of "
+                     "looking like income. Leave unchecked for a normal checking/savings account.",
+            )
+
         if mapping["date"] and mapping["description"] and (mapping["amount"] or mapping["debit"] or mapping["credit"]):
-            rows = csv_parser.normalize(table_df, mapping)
-            balance_info = csv_parser.extract_latest_balance(table_df, mapping)
+            rows = csv_parser.normalize(table_df, mapping, invert_amount=invert_amount, dayfirst=dayfirst)
+            balance_info = csv_parser.extract_latest_balance(table_df, mapping, dayfirst=dayfirst)
         else:
             st.warning("Pick at least a date, description, and amount (or debit/credit) column above.")
     else:

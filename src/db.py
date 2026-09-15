@@ -108,6 +108,21 @@ def delete_account(account_id: int) -> None:
         conn.close()
 
 
+def clear_account_transactions(account_id: int) -> tuple[int, int]:
+    """Delete all transactions and balances for an account, keeping the
+    account itself -- useful for wiping out a bad import (e.g. wrong sign
+    convention) and re-uploading cleanly. Returns (transactions_deleted,
+    balances_deleted)."""
+    conn = get_connection()
+    try:
+        t_count = conn.execute("DELETE FROM transactions WHERE account_id = ?", (account_id,)).rowcount
+        b_count = conn.execute("DELETE FROM balances WHERE account_id = ?", (account_id,)).rowcount
+        conn.commit()
+        return t_count, b_count
+    finally:
+        conn.close()
+
+
 def insert_transactions(account_id: int, rows: list[dict], source_file: str) -> tuple[int, int]:
     """Insert transactions, skipping duplicates. Returns (inserted, skipped)."""
     conn = get_connection()
