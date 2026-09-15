@@ -2,6 +2,10 @@
 # Matching is case-insensitive substring matching against the transaction description.
 # Edit freely from the "Manage Categories" page in the app, or by hand here.
 # The first matching category wins, so put more specific keywords above general ones.
+#
+# Note: some CSV exports truncate long descriptions (e.g. "FITNESS FIRST
+# STREATHA" cuts off "M"), so keywords here favor shorter, truncation-safe
+# fragments over full merchant names where possible.
 
 Groceries:
   - trader joe
@@ -10,6 +14,15 @@ Groceries:
   - kroger
   - costco
   - grocery
+  - iceland
+  - lidl
+  - sainsburys
+  - waitrose
+  - co-op group
+  - m&s simply food
+  - marks & spencer
+  - organic plus
+  - pimlico food and wine
 
 Dining & Restaurants:
   - starbucks
@@ -20,6 +33,70 @@ Dining & Restaurants:
   - restaurant
   - cafe
   - coffee
+  - greggs
+  - itsu
+  - pret a manger
+  - taco bell
+  - mcdonalds
+  - noodle bar
+  - cod fish and chips
+  - pizzahut
+  - fried chicken
+  - thompson deli
+  - shree krishna
+  - village masaleh
+  - panas gurkha
+  - maureen
+  - slice n brew
+  - wolfpack
+  - little bagel co
+  - tough mary
+  - sumup
+  - far east
+  - clifton conv
+  - quinton house
+  - ct4n
+  - dopi
+  - panama estate
+  - sq *rubicon too
+  - sq *sixtysix
+
+Pubs & Bars:
+  - blue posts
+  - waxy o connors
+  - shakespeares head
+  - jd wetherspoon
+  - hootananny
+  - doodle bar
+  - malt cross
+  - roebuck inn
+  - horseshoe inn
+  - railway tavern
+  - enid street tavern
+  - bath inn
+  - sun and 13 cantons
+  - brown ales pub
+  - bbf tap room
+  - cloudwater brew
+  - fellows morton
+  - last post
+  - lloyds no.1
+  - cabin
+  - the cockpit
+  - the den and terrace
+  - mother kellys
+
+Fitness & Leisure:
+  - fitness first
+  - padel
+  - golf
+  - swings
+  - tennis
+  - sx leisure
+  - essex leisure
+  - showcase
+  - ashton gate
+  - nottscounty
 
 Transport:
   - uber
@@ -30,6 +107,12 @@ Transport:
   - parking
   - transit
   - dmv
+  - tfl travel
+  - lul ticket machine
+  - chargedup
+  - dott pass
+  - trainpal
+  - nottingham contactless
 
 Housing:
   - rent
@@ -45,6 +128,7 @@ Utilities:
   - comcast
   - at&t
   - verizon
+  - onestream
 
 Subscriptions:
   - netflix
@@ -54,12 +138,21 @@ Subscriptions:
   - amazon prime
   - apple.com/bill
   - icloud
+  - cursor
 
 Shopping:
   - amazon
   - target
   - walmart
   - best buy
+  - ebay
+  - vinted
+  - amznmktplace
+  - b & q
+  - rosendale news
+  - royal parade news
+  - wh smith
+  - post office
 
 Health:
   - pharmacy
@@ -68,12 +161,16 @@ Health:
   - doctor
   - dental
   - medical
+  - boots
 
 Travel:
   - airlines
   - airbnb
   - hotel
   - expedia
+
+Donations:
+  - enthuse
 
 Income:
   - payroll
@@ -92,3 +189,7 @@ Transfers:
   - venmo
   - zelle
   - paypal transfer
+
+Credit Card Payment:
+  - direct debit payment
+  - payment received
