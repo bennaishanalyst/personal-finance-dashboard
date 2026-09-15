@@ -1,0 +1,94 @@
+# Keyword -> category rules used to auto-categorize transactions.
+# Matching is case-insensitive substring matching against the transaction description.
+# Edit freely from the "Manage Categories" page in the app, or by hand here.
+# The first matching category wins, so put more specific keywords above general ones.
+
+Groceries:
+  - trader joe
+  - whole foods
+  - safeway
+  - kroger
+  - costco
+  - grocery
+
+Dining & Restaurants:
+  - starbucks
+  - doordash
+  - ubereats
+  - uber eats
+  - grubhub
+  - restaurant
+  - cafe
+  - coffee
+
+Transport:
+  - uber
+  - lyft
+  - shell
+  - chevron
+  - exxon
+  - parking
+  - transit
+  - dmv
+
+Housing:
+  - rent
+  - mortgage
+  - hoa
+
+Utilities:
+  - electric
+  - pg&e
+  - water bill
+  - gas bill
+  - internet
+  - comcast
+  - at&t
+  - verizon
+
+Subscriptions:
+  - netflix
+  - spotify
+  - hulu
+  - disney+
+  - amazon prime
+  - apple.com/bill
+  - icloud
+
+Shopping:
+  - amazon
+  - target
+  - walmart
+  - best buy
+
+Health:
+  - pharmacy
+  - cvs
+  - walgreens
+  - doctor
+  - dental
+  - medical
+
+Travel:
+  - airlines
+  - airbnb
+  - hotel
+  - expedia
+
+Income:
+  - payroll
+  - direct deposit
+  - salary
+
+Fees & Interest:
+  - interest charge
+  - annual fee
+  - late fee
+  - overdraft
+
+Transfers:
+  - transfer to
+  - transfer from
+  - venmo
+  - zelle
+  - paypal transfer
